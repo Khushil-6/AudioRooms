@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chatroom-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .chatroom-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .starsign-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .user-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .user-list-item {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #555;
+            background-color: #f9f9f9;
+            padding: 8px 12px;
+            border-radius: 20px;
+            width: 200px;
+            text-align: center;
+        }
+        .action-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .action-button:hover {
+            background-color: #0056b3;
+        }#startButton,
+        #stopButton {
+            width: 200px; /* Adjust width as needed */
+            background-color: #007bff; /* Blue color for start button */
+        }
+
+        #stopButton {
+            background-color: red; /* Red color for stop button */
+        }
+    </style>
+</head>
+<body>
+    <div class="chatroom-container">
+        <h2>Chatroom for {{ current_starsign }}</h2>
+        <img class="starsign-image" src="{{ starsign_image_url }}" alt="{{ current_starsign }}">
+        <h3>Users present below:</h3>
+        <ul class="user-list">
+            {% for username, starsign in users.items() %}
+                <li class="user-list-item">{{ username }} - {{ starsign }}</li>
+            {% endfor %}
+        </ul>
+        <button id="startButton" class="action-button">Start Speaking</button>
+        <button id="stopButton" class="action-button" style="display: none;">Stop Speaking</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var socket = io();
+            var audioPlayer = new Audio(); // Create a single Audio object
+            var startButton = document.getElementById('startButton');
+            var stopButton = document.getElementById('stopButton');
+            var mediaRecorder;
+            var audioChunks = [];
+            var currentUsername = "{{ current_user }}";
+
+            startButton.addEventListener('click', function () {
+                console.log('Start button clicked.');
+                startRecording();
+            });
+
+            stopButton.addEventListener('click', function () {
+                console.log('Stop button clicked.');
+                stopRecording();
+            });
+
+            function stopRecording() {
+                console.log('Stopping recording.');
+                mediaRecorder.stop();
+                stopButton.style.display = 'none';
+                startButton.style.display = 'block';
+            }
+
+            function handleDataAvailable(event) {
+                console.log('Data available:', event);
+                audioChunks.push(event.data);
+                console.log('Current audio chunks:', audioChunks);
+                sendData(event.data); // Send the audio data as it becomes available
+            }
+
+            function sendData(audioBlob) {
+                console.log('Sending audio data:', audioBlob);
+                socket.emit('audio', audioBlob);
+            }
+
+            function startRecording() {
+                console.log('Requesting access to microphone.');
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function (stream) {
+                        console.log('Microphone access granted.');
+                        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+                        mediaRecorder.ondataavailable = handleDataAvailable;
+                        mediaRecorder.start(3000); // Start recording with a buffer of 1000ms
+                        console.log('MediaRecorder started.');
+                        stopButton.style.display = 'block';
+                        startButton.style.display = 'none';
+                    })
+                    .catch(function (error) {
+                        console.error('Error accessing microphone:', error);
+                    });
+            }
+
+            socket.on('connect', function () {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', function () {
+                console.log('Disconnected from server');
+            });
+
+            socket.on('audio', function (audioData) {
+                console.log('Received audio data from server:', audioData);
+                console.log('Sender:', audioData.sender);
+                console.log('user:', currentUsername);
+                if (audioData.sender !== currentUsername) {
+                var audioBlob = new Blob([audioData.audio], { type: 'audio/webm' });
+                console.log('Created audio Blob:', audioBlob);
+                var audioURL = URL.createObjectURL(audioBlob);
+                console.log('Created audio URL:', audioURL);
+                audioPlayer.src = audioURL; // Update the audio source
+                audioPlayer.play(); // Play the audio
+               }
+            });
+        });
+    </script>
+</body>
+</html>

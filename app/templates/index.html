@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+            color: #555;
+        }
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .starsign-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        .starsign-option {
+            text-align: center;
+            cursor: pointer;
+        }
+        .starsign-option img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .starsign-option.selected img {
+            border-color: blue;
+        }
+        .starsign-label {
+            margin-top: 5px;
+            color: #777;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Welcome to the Chatroom</h2>
+        <form action="/" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <h3>Select your star sign:</h3>
+            <div class="starsign-container">
+                <div class="starsign-option" onclick="selectStarsign('Aries')">
+                    <img src="https://imgs.search.brave.com/AM_5nYenkuiusEJaKd5fccvn1BMHjCWaGvyjLa0dRSY/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9oaXBz/LmhlYXJzdGFwcHMu/Y29tL2htZy1wcm9k/L2ltYWdlcy9hcmll/cy1maW5hbC02NWM1/M2EzOTFjNmVkLmpw/Zz9jcm9wPTF4dzox/eGg7Y2VudGVyLHRv/cCZyZXNpemU9NjQw/Oio" alt="Aries">
+                    <div class="starsign-label">Aries</div>
+                </div>
+                <div class="starsign-option" onclick="selectStarsign('Taurus')">
+                    <img src="https://imgs.search.brave.com/eFJcVXKuBKPAcIHuqO80UqcQdI9mHE6D4t0Iwdk-ug8/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvOTcy/MzA5NzEvdmVjdG9y/L3RhdXJ1cy5qcGc_/cz02MTJ4NjEyJnc9/MCZrPTIwJmM9Sk9k/ak1VdjYxQTdKWlpn/WG5YLVJOTk9VdXQw/TWE3aGE0cXpseWdE/REVsYz0" alt="Taurus">
+                    <div class="starsign-label">Taurus</div>
+                </div>
+                <div class="starsign-option" onclick="selectStarsign('Gemini')">
+                    <img src="https://imgs.search.brave.com/LefTrAXyHa6XfepeqaFRt6eLCGjt3YrH9-cQ_Lr4P9s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTMx/NTg2NzcyL3ZlY3Rv/ci9nZW1pbmkuanBn/P3M9NjEyeDYxMiZ3/PTAmaz0yMCZjPTkz/YTBIYzdyQUxGMXdG/N09PZlRtWDJZdGUy/RllMbFRqcm9vQXc2/VGRHSlE9" alt="Gemini">
+                    <div class="starsign-label">Gemini</div>
+                </div>
+                <div class="starsign-option" onclick="selectStarsign('Cancer')">
+                    <img src="https://imgs.search.brave.com/c7nlFHk-s5RPrOFN_LE32hbivQ4cJB_MsC4w1OXQ6_c/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA0LzUzLzU3LzEx/LzM2MF9GXzQ1MzU3/MTE5NF9MNm9rbmpp/MHk2YXRDeTZ6RzNH/allFeWt6N0x6Y2h4/Yi5qcGc" alt="Cancer">
+                    <div class="starsign-label">Cancer</div>
+                </div>
+                <div class="starsign-option" onclick="selectStarsign('Leo')">
+                    <img src="https://imgs.search.brave.com/1xCpCun6MDSGzYIUCUDJz9xlRuYiP5NAlcB6diYiBmg/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTIw/NjMxMTM2NS9waG90/by9sZW8uanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPVlObkNy/a0l1OXp6T0czV0ht/NEN4eFhvekVqUlZV/ampPbkZnYU1pSHhI/YzQ9" alt="Leo">
+                    <div class="starsign-label">Leo</div>
+                </div>
+                <!-- Add more star sign options similarly -->
+            </div>
+            <input type="hidden" id="starsign" name="starsign" required>
+            <br><br>
+            <input type="submit" value="Enter Chatroom">
+        </form>
+    </div>
+
+    <script>
+        let selectedStarsign = '';
+
+        function selectStarsign(starsign) {
+            selectedStarsign = starsign;
+            document.getElementById('starsign').value = starsign;
+            // Remove selection from other options
+            document.querySelectorAll('.starsign-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            // Add selection to the clicked option
+            document.querySelector('.starsign-option[data-starsign="' + starsign + '"]').classList.add('selected');
+        }
+    </script>
+</body>
+</html>
